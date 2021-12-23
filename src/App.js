@@ -27,12 +27,19 @@ const App = () => {
         <ul>
           {fields.map((item, index) => (
             <li key={item.id}>
-              {item.type == "input" ? <Controller
+              {item.type == "input" && <Controller
                 name={`books.${index}.value`}
                 control={control}
                 defaultValue={item.value}
                 render={({ field }) => <input {...field} />}
-              /> : 'test'}
+              />}
+
+              {item.type == "radio" && <Controller
+                name={`books.${index}.value`}
+                control={control}
+                defaultValue={item.value}
+                render={({ field }) => <input {...field} />}
+              />}
               <button onClick={() => remove(index)}>Delete</button>
             </li>
           ))}
