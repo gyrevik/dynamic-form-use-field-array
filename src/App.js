@@ -1,25 +1,45 @@
-import logo from './logo.svg';
-import './App.css';
+import React from "react";
+import { useForm, useFieldArray, Controller } from "react-hook-form";
 
-function App() {
+const App = () => {
+  const { control, handleSubmit } = useForm();
+  const { fields, append, remove } = useFieldArray({
+    control,
+    name: "books"
+  });
+
+  const handleOnSubmit = (data) => {
+    const { books } = data;
+    const filteredArr = books.map(({ value }) => {
+      return value;
+    });
+
+    console.log(filteredArr);
+  };
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div>
+      <form onSubmit={handleSubmit((data) => handleOnSubmit(data))}>
+        <ul>
+          {fields.map((item, index) => (
+            <li key={item.id}>
+              <Controller
+                name={`books.${index}.value`}
+                control={control}
+                defaultValue={item.value}
+                render={({ field }) => <input {...field} />}
+              />
+              <button onClick={() => remove(index)}>Delete</button>
+            </li>
+          ))}
+        </ul>
+        <button type="button" onClick={() => append({ value: "" })}>
+          Add new book
+        </button>
+        <button type="submit">Buy</button>
+      </form>
     </div>
   );
-}
+};
 
 export default App;
