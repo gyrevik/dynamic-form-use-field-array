@@ -29,32 +29,33 @@ const App = () => {
         <button type="button" onClick={() => {append({ value: "", type: "react-datepicker" })}}>
           Add react-datepicker
         </button>
-        <button type="submit">Submit</button>
-        <ul>
-          {fields.map((item, index) => (
-            <li key={item.id}>
-              {item.type == "input" && <Controller
-                name={`controls.${index}.value`}
-                control={control}
-                defaultValue={item.value}
-                render={({ field }) => <input {...field} />}
-              />}
+          
+        {fields.map((item, index) => (
+          <div key={item.id}>
+            {item.type == "input" && <Controller
+              name={`controls.${index}.value`}
+              control={control}
+              defaultValue={item.value}
+              render={({ field }) => <input {...field} />}
+            />}
 
-              {item.type == "react-datepicker" && <Controller
-                control={control}
-                name={`controls.${index}.value`}
-                render={({ field: { onChange, onBlur, value, ref } }) => (
-                  <ReactDatePicker
-                    onChange={onChange}
-                    onBlur={onBlur}
-                    selected={value}
-                  />
-                )}
-              />}
-              <button onClick={() => remove(index)}>Delete</button>
-            </li>
-          ))}
-        </ul>
+            {item.type == "react-datepicker" && <Controller
+              control={control}
+              name={`controls.${index}.value`}
+              render={({ field: { onChange, onBlur, value, ref } }) => (
+                <ReactDatePicker
+                  onChange={onChange}
+                  onBlur={onBlur}
+                  selected={value}
+                />
+              )}
+            />}
+
+            <button onClick={() => remove(index)}>Delete</button>
+          </div>
+        ))}
+
+        <button type="submit">Submit</button>
       </form>
     </div>
   );
