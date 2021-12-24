@@ -13,15 +13,33 @@ const App = () => {
   const [firstLoad, setFirstLoad] = useState(false);
   const [myFields, setMyFields] = useState([]);
 
+  const formatDate = (date) => {
+    var dateobj = new Date(date);
+    var formatted = new Intl.DateTimeFormat("en-US", { dateStyle: 'full', timeStyle: 'long' }).format(dateobj);
+    return formatted;
+  }
+
   useEffect(() => {
     let fieldsFromStorage = localStorage.getItem('filteredArr');
     if (fieldsFromStorage && fieldsFromStorage.length > 0) {
       fieldsFromStorage = JSON.parse(fieldsFromStorage);
       if (fieldsFromStorage[0].value !== "") {
-        const date = fieldsFromStorage[0].value;
-        console.log('date:', date)
+        const date = Date.parse(fieldsFromStorage[0].value);
+
+        //var dateobj = new Date(fieldsFromStorage[0].value);
+        //var formatted = new Intl.DateTimeFormat("en-US", { dateStyle: 'full', timeStyle: 'long' }).format(dateobj);
+        console.log('formatted:', formatDate(fieldsFromStorage[0].value))
       }
-      setMyFields(fieldsFromStorage);
+
+      const formattedFieldsFromStorage = fieldsFromStorage.map(p =>
+        p.value !== "" && p.type == "react-datepicker"
+          ? { ...p, value: formatDate(p.value) }
+          : p
+      );
+
+      console.log('formattedFieldsFromStorage:', formattedFieldsFromStorage)
+
+      setMyFields(formattedFieldsFromStorage);
     }
     console.log('fieldsFromStorage:', fieldsFromStorage);
     //setMyFields([]);
@@ -29,7 +47,7 @@ const App = () => {
   }, [firstLoad]);
 
   const handleOnSubmit = (data) => {
-    console.log('data:', data)
+    console.log('submitted data:', data)
     const { controls } = data;
     const filteredArr = controls.map(({ value, type }, index) => {
       return {id:index, value, type};
@@ -55,7 +73,7 @@ const App = () => {
           Add react-datepicker
         </button>
           
-        {fields.map((item, index) => (
+        {myFields.map((item, index) => (
           <div key={item.id}>
             {item.type === "input" && <Controller
               name={`controls.${index}.value`}
